@@ -14,7 +14,15 @@ const routes = [
     path: '/inicio',
     name: 'Inicio',
     
-    component: () => import(/* webpackChunkName: "about" */ '../views/Inicio.vue')
+    component: () => import('../views/Inicio.vue'),
+    children:[
+      {
+        path:'/categorias',
+        name:'Categorias',
+
+        component: () =>import('../views/Categorias.vue')
+      }
+    ]
   }
 ]
 
