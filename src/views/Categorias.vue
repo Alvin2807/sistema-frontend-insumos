@@ -13,6 +13,7 @@
                 label="Buscar"
                 type="text"
                 autocomplete="off"
+                class="caption"
             >
 
             </v-text-field>
@@ -60,7 +61,15 @@
             <v-toolbar flat>
                 <v-toolbar-title id="tituloModal">{{ tituloModalRegistro }}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn class="elevation-0" id="btnCerrar" @click="cerrarModalRegistrar()">X</v-btn>
+                <v-btn 
+                    class="elevation-0" 
+                    id="btnCerrar" 
+                    small
+                    fab
+                    @click="cerrarModalRegistrar()"
+                >
+                X
+            </v-btn>
             </v-toolbar>
             <v-divider></v-divider>
             <v-card-text>
@@ -73,6 +82,8 @@
                                 type="text"
                                 color="#053565"
                                 autocomplete="off"
+                                maxLength="100"
+                                class="my-input caption"
                                 :rules="camposObligatorio"
                             >
                             </v-text-field>
@@ -270,5 +281,9 @@ export default {
 #btnCerrar:hover{
     background-color: red;
     color: white;
+}
+
+.my-input input{
+    text-transform: uppercase;
 }
 </style>

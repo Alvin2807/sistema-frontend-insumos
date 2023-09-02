@@ -21,6 +21,13 @@ const routes = [
         name:'Categorias',
 
         component: () =>import('../views/Categorias.vue')
+      },
+
+      {
+        path:'/marcas',
+        name:'Marcas',
+
+        component: () =>import('../views/Marcas.vue')
       }
     ]
   }

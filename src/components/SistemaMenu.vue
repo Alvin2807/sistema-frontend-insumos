@@ -4,7 +4,6 @@
         <v-navigation-drawer 
             v-model="drawer" 
             app
-           
         >
             <template v-slot:prepend>
                 <v-list-item two-line>
@@ -52,7 +51,7 @@
 
         </v-navigation-drawer>
 
-        <v-app-bar app>
+        <v-app-bar app color="#053565" dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-spacer></v-spacer>
             <img height="50px" :src="require('../assets/mp.png')"/>
@@ -81,7 +80,8 @@ export default {
                     action:'segment',
                     items:
                     [
-                        {title:'Categorías', path:'/categorias'}
+                        {title:'Categorías', path:'/categorias'},
+                        {title: 'Marcas', path:'/marcas'}
                     ],
                     title:'Parametros'
                 }
