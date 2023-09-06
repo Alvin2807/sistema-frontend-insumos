@@ -28,6 +28,27 @@ const routes = [
         name:'Marcas',
 
         component: () =>import('../views/Marcas.vue')
+      },
+
+      {
+        path:'/depositos',
+        name: 'Depositos',
+
+        component: () =>import('../views/Depositos.vue')
+      },
+
+      {
+        path:'/localizaciones',
+        name:'Localizaciones',
+
+        component: () =>import('../views/Localizaciones.vue')
+      },
+
+      {
+        path:'/unidades_de_medidas',
+        name:'Unidades',
+
+        component: () =>import('../views/Unidades.vue')
       }
     ]
   }

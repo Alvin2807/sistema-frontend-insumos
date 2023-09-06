@@ -115,18 +115,19 @@ export default {
                 this.loader = 'btnCargar'
                 const loguear = await API.post('iniciar_sesion', this.editedItem) 
                 .then(respuesta=>{
-                    // eslint-disable-next-line no-empty
                     if (respuesta.data.ok == true) {
-                        const token  = respuesta.data.token
-                        const user   = respuesta.data.data.name
-                        const usuario = respuesta.data.data.usuario
+                        const token    = respuesta.data.token
+                        const user     = respuesta.data.data.name
+                        const usuario  = respuesta.data.data.usuario
+                        const despacho = respuesta.data.data.fk_despacho
                         localStorage.setItem('token', token)
                         localStorage.setItem('user', JSON.stringify(user))
                         localStorage.setItem('usuario', JSON.stringify(usuario))
+                        localStorage.setItem('fk_despacho', JSON.stringify(despacho))
                         API.defaults.headers.common['Authorization'] = "Bearer" +token
                         this.$router.push({path:'/inicio'})
                         this.mensajeUsuarioExitoso(respuesta.data.exitoso)
-                    // eslint-disable-next-line no-empty
+                 
                     } else if (respuesta.data.ok == false){
                         this.mensajeError(respuesta.data.error)
                     } else {

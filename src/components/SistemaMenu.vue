@@ -4,6 +4,10 @@
         <v-navigation-drawer 
             v-model="drawer" 
             app
+            class="elevation-0"
+            style="border: solid #BDC3C7  1px"
+           
+           
         >
             <template v-slot:prepend>
                 <v-list-item two-line>
@@ -24,7 +28,7 @@
                     v-model="item.active"
                     :prepend-icon="item.action"
                     no-action
-                    color="#053565"
+                    color="#030C52"
                 
                 >
                     <template v-slot:activator>
@@ -37,7 +41,7 @@
                     <v-list-item
                         v-for="child in item.items"
                         :key="child.title"
-                        color="#053565"
+                        color="blue darken-4"
                         link
                         :to="child.path"
                     >
@@ -81,7 +85,11 @@ export default {
                     items:
                     [
                         {title:'Categorías', path:'/categorias'},
-                        {title: 'Marcas', path:'/marcas'}
+                        {title:'Depositos', path:'/depositos'},
+                        {title:'Localizaciones', path:'/localizaciones'},
+                        {title:'Unidades de Medidas', path:'/unidades_de_medidas'}
+
+                        //{title: 'Marcas', path:'/marcas'}
                     ],
                     title:'Parametros'
                 }

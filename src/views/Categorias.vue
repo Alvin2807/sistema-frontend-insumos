@@ -14,6 +14,7 @@
                 type="text"
                 autocomplete="off"
                 class="caption"
+                prepend-inner-icon="search"
             >
 
             </v-text-field>
@@ -21,6 +22,7 @@
         </v-col>
         <v-data-table
             no-data-text="No hay datos disponibles"
+            no-results-text="No se encontro resultado"
             :footer-props="{itemsPerPageText:'Categorías por páginas'}"
             :items-per-page=10
             :search="buscar"
@@ -30,13 +32,16 @@
             loading-text="Cargando por favor espere..."
         >
             <template v-slot:[`item.actions`]="{ item }">
-            <v-icon
-                class="mr-2"
-                mb
-                @click="editar(item)"
-            >
-                mdi-pencil
-            </v-icon>
+                <v-btn
+                    color="green"
+                    dark
+                    fab
+                    x-small
+                    class="elevation-0"
+                    @click="editar(item)"
+                >
+                    <v-icon>mdi-pencil</v-icon>
+                </v-btn>
             </template>
 
         </v-data-table>
@@ -97,6 +102,7 @@
                 <v-spacer></v-spacer>
                 <v-btn 
                     text 
+                    outlined
                     color="#053565" 
                     class="elevation-0" 
                     :loading="btnRegistrar"
