@@ -5,6 +5,7 @@
             v-model="drawer" 
             app
             class="elevation-0"
+            width="240px"
             style="border: solid #BDC3C7  1px"
            
            
@@ -87,12 +88,21 @@ export default {
                         {title:'Categorías', path:'/categorias'},
                         {title:'Depositos', path:'/depositos'},
                         {title:'Localizaciones', path:'/localizaciones'},
-                        {title:'Unidades de Medidas', path:'/unidades_de_medidas'}
+                        {title:'Medidas', path:'/unidades_de_medidas'}
 
                         //{title: 'Marcas', path:'/marcas'}
                     ],
                     title:'Parametros'
-                }
+                },
+
+                {
+                    action:'dashboard',
+                    items:
+                    [
+                        {title:'Productos', path:'/productos'},
+                    ],
+                    title:'Productos'
+                },
             ]
         }
     },
