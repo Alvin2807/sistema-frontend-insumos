@@ -57,12 +57,23 @@
         </v-navigation-drawer>
 
         <v-app-bar app color="#053565" dark>
+           
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-spacer></v-spacer>
             <img height="50px" :src="require('../assets/mp.png')"/>
             <v-toolbar-title class="mx-2">{{ tituloToolbar }}</v-toolbar-title>
             <img height="50px" :src="require('../assets/sistema.png')"/>
             <v-spacer></v-spacer>
+           
+            <v-badge
+                color="red"
+                :content="totalAcciones"
+            >
+           
+            <v-icon>notifications_active</v-icon>
+            
+            </v-badge>
+           
         </v-app-bar>
 
         <router-view/>
@@ -74,6 +85,7 @@
    </v-app>
 </template>
 <script>
+import { mapState, mapActions} from 'vuex'
 export default {
     name:'SistemaMenu',
     data() {
@@ -103,22 +115,40 @@ export default {
                     ],
                     title:'Productos'
                 },
+
+                {
+                    action:'app_registration',
+                    items:
+                    [
+                        {title:'Entradas/Salidas', path:'/acciones_pendientes'},
+                    ],
+                    title:'Acciones'
+                },
             ]
         }
     },
 
     mounted() {
         this.datos
+        this.datosAcciones()
     },
 
     computed: {
+        ...mapState(['acciones']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Sistema de Control de Insumos' : ''
         },
 
         datos(){
             return localStorage.getItem('user').replace(/['"]+/g, '');
+        },
+
+        totalAcciones(){
+            return localStorage.getItem('total_acciones')
         }
+    },
+    methods: {
+       ...mapActions(['datosAcciones']) 
     },
 }
 </script>

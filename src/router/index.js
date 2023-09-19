@@ -56,6 +56,13 @@ const routes = [
         name:'Productos',
 
         component: ()=>import('../views/Productos.vue')
+      },
+
+      {
+        path:'/acciones_pendientes',
+        name:'AccionesPendientes',
+
+        component: ()=>import('../views/AccionesPendientes')
       }
     ]
   }

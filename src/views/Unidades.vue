@@ -146,7 +146,7 @@ export default {
             btnRegistrar:false,
             campos:
             [
-                {text:'Unidad de medida', value:'disposicion'},
+                {text:'Unidad de medida', value:'unidad_medida'},
                 {text:'Editar', value:'actions', sortable:false}
             ],
             desserts:[],

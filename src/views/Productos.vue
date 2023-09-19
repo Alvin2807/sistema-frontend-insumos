@@ -200,15 +200,15 @@
                             sm="6"
                         >
                             <v-autocomplete
-                                v-model="editedItem.fk_disposicion"
+                                v-model="editedItem.fk_unidad_medida"
                                 label="Unidad de Medida*"
                                 type="text"
                                 color="#053565"
                                 autocomplete="off"
                                 dense
                                 :items="medidas"
-                                item-text="disposicion"
-                                item-value="id_disposicion"
+                                item-text="unidad_medida"
+                                item-value="id_unidad_medida"
                                 class="caption my-input"
                                 no-data-text="No hay datos disponibles"
                                 :rules="campoObligatorio"
@@ -302,7 +302,7 @@ export default {
                 fk_categoria:'',
                 fk_marca:'',
                 fk_modelo:'',
-                fk_disposicion:'',
+                fk_unidad_medida:'',
                 fk_color:'',
                 usuario:''
             }
