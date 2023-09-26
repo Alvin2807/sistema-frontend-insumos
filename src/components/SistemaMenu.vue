@@ -121,6 +121,7 @@ export default {
                     items:
                     [
                         {title:'Entradas/Salidas', path:'/acciones_pendientes'},
+                        {title:'Crear entrada', path:'/crear_entrada'}
                     ],
                     title:'Acciones'
                 },

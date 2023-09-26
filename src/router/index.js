@@ -63,6 +63,13 @@ const routes = [
         name:'AccionesPendientes',
 
         component: ()=>import('../views/AccionesPendientes')
+      },
+
+      {
+        path:'/crear_entrada',
+        name:'CrearEntrada',
+
+        component: ()=>import('../views/CrearEntrada')
       }
     ]
   }
