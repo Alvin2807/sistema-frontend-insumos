@@ -60,24 +60,6 @@
                     </template>
                     <span>Editar</span>
                 </v-tooltip>
-
-                <v-tooltip right>
-                    <template v-slot:activator="{on,attrs}">
-                        <v-btn
-                            class="mr-2 elevation-0"
-                            fab
-                            x-small
-                            dark
-                            v-on="on"
-                            v-bind="attrs"
-                            color="info"
-                            @click="addLocalizacion(item)"
-                        >
-                            <v-icon>add</v-icon>
-                        </v-btn>
-                    </template>
-                    <span>Agregar localización</span>
-                </v-tooltip>
             </template>
         </v-data-table>
       <v-overlay :value="overlay" :opacity="opacity">
@@ -105,7 +87,7 @@
             <v-divider></v-divider>
             <v-card-text>
                 <v-form ref="validacion">
-                    <v-row>
+                    <v-row class="mt-2">
                         <v-col cols="12" sm="12">
                             <v-text-field
                                 v-model="editedItem.deposito"
@@ -118,6 +100,26 @@
                                 :rules="camposObligatorio"
                             >
                             </v-text-field>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="12"
+                        >
+                            <v-autocomplete
+                                v-model="editedItem.fk_piso"
+                                label="Piso"
+                                color="#053565"
+                                autocomplete="off"
+                                class="caption my-input"
+                                dense
+                                no-data-text="No hay datos disponibles"
+                                type="text"
+                                :items="pisos"
+                                item-text="piso"
+                                item-value="id_piso"
+                                :rules="camposObligatorio"
+                            >
+                            </v-autocomplete>
                         </v-col>
                     </v-row>
                 </v-form>
@@ -138,73 +140,6 @@
         </v-card>
       </v-dialog>
     </v-container>
-
-    <v-dialog
-        v-model="dialogLocalizacion"
-        persistent
-        width="700px"
-        transition="fab-transition"
-    >
-        <v-card>
-            <v-toolbar flat id="tituloModal">
-                <v-toolbar-title>{{ tituloModalLocalizacion }}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn class="elevation-0" fab id="btnCerrarModal" @click="cerrarModalLocalizacion()" small>X</v-btn>
-            </v-toolbar>
-            <v-card-text>
-                <v-form ref="validacionLocalizaciones">
-                    <v-row>
-                        <v-col cols="12" sm="6">
-                            <v-text-field
-                                v-model="localizaciones.localizacion"
-                                label="Localización"
-                                type="text"
-                                class="caption my-input"
-                                autocomplete="off"
-                                color="#053565"
-                                maxLength="100"
-                                :rules="camposObligatorio"
-                            >
-                            </v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="6">
-                            <v-autocomplete
-                                v-model="localizaciones.fk_piso"
-                                label="N° de piso"
-                                autocomplete="off"
-                                type="text"
-                                color="#053565"
-                                class="caption"
-                                :rules="camposObligatorio"
-                                no-data-text="No hay datos disponible"
-                                :items="dataPisos"
-                                item-text="piso"
-                                item-value="id_piso"
-                            >
-                            </v-autocomplete>
-                        </v-col>
-                    </v-row>
-                </v-form>
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                    class="elevation-0"
-                    color="#053565"
-                    text
-                    outlined
-                    :loading="btnAddLocalizacion"
-                    @click="registrarLocalizacion()"
-                >
-                    registrar
-                </v-btn>
-
-            </v-card-actions>
-         
-        </v-card>
-
-    </v-dialog>
    </v-app>
 </template>
 <script src="sweetalert2.min.js"></script>
@@ -218,8 +153,6 @@ export default {
             buscar:'',
             overlay:false,
             dialogRegistrar:false,
-            dialogLocalizacion:false,
-            btnAddLocalizacion:false,
             opacity:0,
             cargarDatos:true,
             loader:null,
@@ -227,6 +160,7 @@ export default {
             campos:
             [
                 {text:'Deposito', value:'deposito'},
+                {text:'Piso', value:'piso'},
                 {text:'Acciones', value:'actions', sortable:false},
             ],
 
@@ -238,17 +172,11 @@ export default {
             editedItem:{
                 deposito:'',
                 usuario:'',
-                fk_despacho:''
+                fk_despacho:'',
+                fk_piso:''
             },
 
-            localizaciones:{
-                fk_deposito:'',
-                fk_piso:'',
-                usuario:'',
-                localizacion:'',
-            },
-            dataPisos:[]
-            
+            pisos:[]
         }
     },
 
@@ -286,7 +214,6 @@ export default {
 
     mounted() {
         this.mostrarDepositos()
-        
     },
 
     methods: {
@@ -304,7 +231,7 @@ export default {
         async  mostrarPisos(){
             const mostrarData = await API.get('pisos')
             .then(respuesta=>{
-               this.dataPisos = respuesta.data.data
+               this.pisos = respuesta.data.data
             })
             return mostrarData
         },
@@ -314,6 +241,7 @@ export default {
             setTimeout(() =>{
                 this.overlay = false
                 this.dialogRegistrar = true
+                this.mostrarPisos()
             },2000)
         
         },
@@ -346,15 +274,17 @@ export default {
                         this.dialogRegistrar = false
                         this.resetearCampos()
                         this.mensajeRegistroExitoso(respuesta.data.exitoso)
-                    } else if (respuesta.data.existe) {
-                        this.mensajeExisteRegistroDeposito(respuesta.data.existe)
                     } else if (respuesta.data.ok == false) {
                         this.mensajeErrorRegistro(respuesta.data.errorRegistro)
+                    } else if (respuesta.data.existe) {
+                        this.mensajeExisteRegistroDeposito(respuesta.data.existe)
                     }
+                    
                 })
 
                 return registrarDeposito
             }
+            
            } catch (error) {
             if (error) {
                 Swal.fire({
@@ -394,79 +324,6 @@ export default {
                 timer:2000
             })
         },
-
-        addLocalizacion(item){
-            this.overlay = true 
-            setTimeout(()=>{
-                this.overlay = false
-                this.mostrarPisos()
-                this.dialogLocalizacion = true
-                this.localizaciones.fk_deposito = item.id_deposito
-            },2000)
-        },
-
-        cerrarModalLocalizacion(){
-            this.dialogLocalizacion = false
-            this.resetearCamposLocalizacion()
-        },
-
-       async registrarLocalizacion(){
-            
-            try {
-                this.localizaciones.usuario = this.datos
-                if (this.$refs.validacionLocalizaciones.validate()) {
-                    this.loader = 'btnAddLocalizacion'
-                const registrarLocalizacion = await API.post('localizaciones', this.localizaciones)
-                .then(respuesta=>{
-                    if (respuesta.data.ok == true) {
-                        this.dialogLocalizacion = false
-                        this.mensajeExitosoLocalizacion(respuesta.data.exitoso)
-                        this.resetearCamposLocalizacion()
-                    } else if (respuesta.data.existeLocalizacion) {
-                        this.mensajeExisteLocalizacion(respuesta.data.existeLocalizacion)
-                    } else if (respuesta.data.ok == false) {
-                        this.mensajeErrorRegistroLocalizacion(respuesta.data.errorLocalizaciones)
-                    }
-                })
-
-                return registrarLocalizacion
-
-            }
-            } catch (error) {
-                if (error) {
-                    
-                }
-            }
-           
-        },
-
-        mensajeExitosoLocalizacion(exitoso){
-            Swal.fire({
-                icon:'success',
-                title:'!Genial',
-                text:exitoso,
-                showConfirmButton:false,
-                timer:2000
-            })
-        },
-
-        mensajeErrorRegistroLocalizacion(errorLocalizaciones){
-            Swal.fire({
-                icon:'error',
-                title:errorLocalizaciones,
-                showConfirmButton:false,
-                timer:2000
-            })
-        },
-
-        mensajeExisteLocalizacion(existeLocalizacion){
-            Swal.fire({
-                icon: 'warning',
-                title:existeLocalizacion,
-                showConfirmButton:false,
-                timer:2000
-            })
-        }
 
     },
 }

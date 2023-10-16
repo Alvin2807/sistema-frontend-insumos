@@ -1,12 +1,14 @@
 <template>
-    <v-app>
+    <v-app style="background-color: #F2F4F4;">
        <login-sistema/>
        <v-container>
-        <v-layout align-center justify-center>
+        <v-layout align-center justify-center class="mt-16">
             <v-flex xs12 sm8 md3>
-                <v-card class="elevation-0">
+                <v-card class="elevation-5">
                     <v-card-text>
+                        <v-toolbar flat height="100px"><v-icon class="mx-auto" size="100px">account_circle</v-icon></v-toolbar>
                         <h3 id="tituloIniciar" class="text-center">{{ iniciarLoginTitulo }}</h3>
+                       
                         <v-form ref="validacion">
                             <v-row class="mt-2">
                                 <v-col 
@@ -34,12 +36,13 @@
                                     color="#011258"
                                     dense
                                     :rules="campoObligatorio"
-                                    prepend-inner-icon="password"
+                                    prepend-inner-icon="key"
                                     :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                     @click:append="show1 = !show1"
                                 >
                                 </v-text-field>
                                 </v-col>
+                               
                             </v-row>
                         </v-form>
                     </v-card-text>
@@ -47,8 +50,10 @@
                         <v-spacer></v-spacer>
                         <v-btn
                             class="elevation-0"
-                            color="#011258"
+                            color="#070346"
                             dark
+                            width="100%"
+                            height="40px"
                             :loading="btnCargar"
                             @click="acceder()"
                         >
@@ -69,6 +74,7 @@
 import LoginSistema from '../components/LoginSistema.vue'
 import Swal from 'sweetalert2'
 import API from '@/API'
+import {mapActions} from 'vuex'
 export default {
  components:{
     LoginSistema,
@@ -108,6 +114,7 @@ export default {
     },
 
     methods: {
+        ...mapActions(['guardarUsuario']),
         async acceder(){
         try {
 
@@ -149,7 +156,6 @@ export default {
         }
            
         },
-
 
         mensajeErrorUsuarioIncorrecto(message){
             Swal.fire({

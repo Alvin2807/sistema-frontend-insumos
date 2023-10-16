@@ -6,9 +6,6 @@
             app
             class="elevation-0"
             width="240px"
-            style="border: solid #BDC3C7  1px"
-           
-           
         >
             <template v-slot:prepend>
                 <v-list-item two-line>
@@ -17,7 +14,7 @@
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title>{{ datos }}</v-list-item-title>
+                    <v-list-item-title class="secondary--text">{{ datos }}</v-list-item-title>
                 </v-list-item-content>
                 </v-list-item>
             </template>
@@ -99,7 +96,6 @@ export default {
                     [
                         {title:'Categorías', path:'/categorias'},
                         {title:'Depositos', path:'/depositos'},
-                        {title:'Localizaciones', path:'/localizaciones'},
                         {title:'Medidas', path:'/unidades_de_medidas'}
 
                         //{title: 'Marcas', path:'/marcas'}
@@ -131,11 +127,14 @@ export default {
 
     mounted() {
         this.datos
-        this.datosAcciones()
+        this.datosAcciones();
+        window.location.hash="";
+        window.location.hash="Again-No-back-button" //chrome
+        window.onhashchange=function(){window.location.hash="";}
     },
 
     computed: {
-        ...mapState(['acciones']),
+        ...mapState(['acciones','loginDatos']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Sistema de Control de Insumos' : ''
         },
@@ -152,4 +151,6 @@ export default {
        ...mapActions(['datosAcciones']) 
     },
 }
+
+
 </script>
