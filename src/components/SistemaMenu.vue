@@ -10,7 +10,7 @@
             <template v-slot:prepend>
                 <v-list-item two-line>
                 <v-list-item-avatar>
-                   <v-icon size="50px">account_circle</v-icon>
+                   <v-icon size="50px" color="#053565">account_circle</v-icon>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
@@ -61,34 +61,121 @@
             <v-toolbar-title class="mx-2">{{ tituloToolbar }}</v-toolbar-title>
             <img height="50px" :src="require('../assets/sistema.png')"/>
             <v-spacer></v-spacer>
-           
-            <v-badge
-                color="red"
-                :content="totalAcciones"
+
+            <div class="text-center">
+                <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-width="200"
+                    offset-y
+                >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="#053565"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                        class="elevation-0"
+                    >
+                    <v-icon size="30px">person</v-icon>
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-list>
+                    <v-list-item>
+                        <v-list-item-avatar>
+                            <v-icon size="50px" color="#053565">account_circle</v-icon>
+                        </v-list-item-avatar>
+
+                        <v-list-item-content>
+                        <v-list-item-title>{{ datos }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    </v-list>
+
+                    <v-divider></v-divider>
+
+                    <v-list>
+                    <v-list-item>
+                        <v-list-item-action>
+                            <v-btn 
+                                class="elevation-0" 
+                                color="red" 
+                                text
+                                @click="cerrarSession()"
+                            >
+                                <v-icon>block</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                        <v-list-item-title>Cerrar Sesion</v-list-item-title>
+                    </v-list-item>
+
+                    <v-list-item>
+                        <v-list-item-action>
+                            <v-btn class="elevation-0" color="green" text>
+                                <v-icon>visibility</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                        <v-list-item-title>Ver Perfil</v-list-item-title>
+                    </v-list-item>
+                    </v-list>
+
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card>
+                </v-menu>
+            </div>
+            <v-btn 
+                color="#053565" 
+                class="elevation-0"
+                v-if="totalAcciones > 0"
+                @click="verNotificacion()"
             >
+                <v-badge
+                    color="red"
+                    :content="totalAcciones"
+                >
+                <v-icon  
+                    v-on="on"
+                    v-bind="attrs
+                ">
+                notifications_active
+                </v-icon>
+                </v-badge>
+            </v-btn>
+              
            
-            <v-icon>notifications_active</v-icon>
-            
-            </v-badge>
            
         </v-app-bar>
-
         <router-view/>
-
-     
-        
     </div>
+
+    <v-overlay :value="overlay" :opacity="opacity">
+        <v-progress-circular
+            indeterminate
+            size="100"
+            width="10"
+            color="#053565"
+        >
+        </v-progress-circular>
+    </v-overlay>
 
    </v-app>
 </template>
+<script src="sweetalert2.min.js"></script>
 <script>
 import { mapState, mapActions} from 'vuex'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
     name:'SistemaMenu',
     data() {
         return {
             drawer:null,
             titulo:-1,
+            opacity:0,
+            overlay:false,
             items:[
                 {
                     action:'segment',
@@ -116,12 +203,15 @@ export default {
                     action:'app_registration',
                     items:
                     [
-                        {title:'Entradas/Salidas', path:'/acciones_pendientes'},
+                        //{title:'Entradas/Salidas', path:'/acciones_pendientes'},
                         {title:'Crear entrada', path:'/crear_entrada'}
                     ],
                     title:'Acciones'
                 },
-            ]
+            ],
+                menu: false,
+                message: false,
+                hints: true,
         }
     },
 
@@ -148,7 +238,37 @@ export default {
         }
     },
     methods: {
-       ...mapActions(['datosAcciones']) 
+       ...mapActions(['datosAcciones']),
+
+       cerrarSession(){
+        Swal.fire({
+            title: '¿Estas seguro de cerrar sesion?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí',
+            cancelButtonText:'No'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            this.menu = false
+            this.overlay = true
+            setTimeout(()=>{
+            this.overlay = false
+            this.$router.push({path:'/'})
+        },2000)
+        }
+        })
+      
+       },
+
+       verNotificacion(){
+        this.overlay = true
+        setTimeout(() =>{
+            this.overlay = false
+            this.$router.push({path:'/acciones_pendientes'})
+        },2000)
+       }
     },
 }
 

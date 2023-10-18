@@ -10,6 +10,7 @@
                 class="elevation-0"
                 color="#053565"
                 dark
+                height="40px"
                 @click="crear()"
             >
                 <v-icon>add</v-icon>
@@ -134,7 +135,7 @@
 
                         <v-col
                             cols="12"
-                            sm="12"
+                            sm="6"
                         >
                             <v-autocomplete
                                 v-model="editedItem.fk_categoria"
@@ -169,28 +170,7 @@
                                 class="caption my-input"
                                 no-data-text="No hay datos disponibles"
                                 :rules="campoObligatorio"
-                                @change="traerModelos()"
-                            >
-                            </v-autocomplete>
-                        </v-col>
-
-                        <v-col
-                            cols="12"
-                            sm="6"
-                        >
-                            <v-autocomplete
-                                v-model="editedItem.fk_modelo"
-                                label="Modelo*"
-                                type="text"
-                                color="#053565"
-                                autocomplete="off"
-                                dense
-                                :items="modelos"
-                                item-text="nombre_modelo"
-                                item-value="id_modelo"
-                                class="caption my-input"
-                                no-data-text="No hay datos disponibles"
-                                :rules="campoObligatorio"
+                              
                             >
                             </v-autocomplete>
                         </v-col>
@@ -232,7 +212,6 @@
                                 item-value="id_color"
                                 class="caption my-input"
                                 no-data-text="No hay datos disponibles"
-                                
                             >
                             </v-autocomplete>
                         </v-col>
@@ -244,7 +223,6 @@
                 <v-spacer></v-spacer>
                 <v-btn
                     class="elevation-0"
-                    text
                     outlined
                     color="#053565"
                     :loading="btnRegistrar"
@@ -279,9 +257,8 @@ export default {
                 {text:'Código', value:'codigo_producto'},
                 {text:'Producto', value:'producto', filterable:false},
                 {text:'Marca', value:'nombre_marca', filterable:false},
-                {text:'Modelo', value:'nombre_modelo', filterable:false},
-                {text:'Color', value:'color', filterable:false},
                 {text:'Categoría', value:'categoria', filterable:false},
+                {text:'Color', value:'color', filterable:false},
                 {text:'Stock', value:'stock', filterable:false},
                 {text:'Estado', value:'estado', filterable:false},
                 {text:'Editar', value:'actions', sortable:false}
@@ -291,7 +268,6 @@ export default {
             medidas:[],
             marcasData:[],
             colores:[],
-            modelos:[],
             campoObligatorio:
             [
                 v => !!v || 'Campo obligatorio'
@@ -301,7 +277,6 @@ export default {
                 producto:'',
                 fk_categoria:'',
                 fk_marca:'',
-                fk_modelo:'',
                 fk_unidad_medida:'',
                 fk_color:'',
                 usuario:''
@@ -398,13 +373,6 @@ export default {
             })
         },
 
-       async traerModelos(){
-        await API .get('traer_modelos_por_marca/' + this.editedItem.fk_marca)
-        .then(respuesta=>{
-            this.editedItem.fk_modelo = ''
-            this.modelos = respuesta.data.data;
-        })
-        },
 
       async  registrar(){
             try {

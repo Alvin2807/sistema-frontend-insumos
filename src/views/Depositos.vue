@@ -9,6 +9,7 @@
             <v-btn
                 color="#053565"
                 dark
+                height="40px"
                 class="elevation-0"
                 @click="crear()"
             >
@@ -128,7 +129,6 @@
                 <v-spacer></v-spacer>
                 <v-btn
                     class="elevation-0"
-                    text
                     outlined
                     color="#053565"
                     :loading="btnRegistrar"

@@ -7,10 +7,11 @@
         <v-btn 
             color="#053565" 
             dark 
+            height="40px"
             class="elevation-0"
             @click="crear()"
         >
-        <v-icon class="mx-1">add</v-icon>
+        <v-icon>add</v-icon>
         crear
     </v-btn>
     </v-toolbar>
@@ -117,7 +118,6 @@
                 <v-btn
                     class="elevation-0"
                     color="#053565"
-                    text
                     outlined
                     :loading="btnRegistrar"
                     @click="registrar()"
@@ -229,10 +229,10 @@ export default {
                             this.mensajeExitosoRegistrar(respuesta.data.exitoso)
                             this.dialogRegistrar = false
                             this.resetear()
-                        } else if (respuesta.data.existe) {
-                            this.mensajeExisteRegistro(respuesta.data.existe)
                         } else if (respuesta.data.errorRegistro) {
                             this.mensajeErrorRegitro(respuesta.data.errorRegistro)
+                        } else if (respuesta.data.existe) {
+                            this.mensajeExisteRegistro(respuesta.data.existe)
                         }
                     })
 

@@ -1,56 +1,47 @@
 <template>
    <v-app>
     <v-container>
-        <v-card class="elevation-0">
-            <v-toolbar flat id="tituloToolbar">
+        <v-toolbar flat id="tituloToolbar">
             <v-toolbar-title>{{ tituloToolbar }}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn class="elevation-0" color="#053565" dark @click="crear()"> <v-icon>add</v-icon> crear</v-btn>
+            <v-btn class="elevation-0" color="#053565" dark @click="crear()" height="40px"> <v-icon>add</v-icon> crear</v-btn>
         </v-toolbar>
-
-        <v-card-text>
-            <v-col cols="12" sm="6">
-                <v-text-field
-                    v-model="buscar"
-                    color="#053565"
-                    label="Buscar"
-                    type="text"
-                    autocomplete="off"
-                    class="caption"
-                    prepend-inner-icon="search"
-                >
-                </v-text-field>
-            </v-col>
-            <v-data-table
-                no-data-text="No hay datos disponibles"
-                no-results-text="No se encontro resultado"
-                :footer-props="{itemsPerPageText:'Categorías por páginas'}"
-                :items-per-page=10
-                :search="buscar"
-                :headers="campos"
-                :items="desserts"
-                :loading="cargarDatos"
-                loading-text="Cargando por favor espere..."
+        <v-col cols="12" sm="6">
+            <v-text-field
+                v-model="buscar"
+                color="#053565"
+                label="Buscar"
+                type="text"
+                autocomplete="off"
+                class="caption"
+                prepend-inner-icon="search"
             >
-                <template v-slot:[`item.actions`]="{ item }">
-                    <v-btn
-                        color="green"
-                        dark
-                        fab
-                        x-small
-                        class="elevation-0"
-                        @click="editar(item)"
-                    >
-                        <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                </template>
-
-            </v-data-table>
-        </v-card-text>
-    
-
-        </v-card>
-     
+            </v-text-field>
+        </v-col>
+        <v-data-table
+            no-data-text="No hay datos disponibles"
+            no-results-text="No se encontro resultado"
+            :footer-props="{itemsPerPageText:'Categorías por páginas'}"
+            :items-per-page=10
+            :search="buscar"
+            :headers="campos"
+            :items="desserts"
+            :loading="cargarDatos"
+            loading-text="Cargando por favor espere..."
+        >
+        <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+                color="green"
+                dark
+                fab
+                x-small
+                class="elevation-0"
+                @click="editar(item)"
+            >
+                <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+        </template>
+        </v-data-table>
     </v-container>
    
     <v-overlay :value="overlay" :opacity="opacity">
@@ -107,7 +98,6 @@
                 
                 <v-spacer></v-spacer>
                 <v-btn 
-                    text 
                     outlined
                     color="#053565" 
                     class="elevation-0" 

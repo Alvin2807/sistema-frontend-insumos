@@ -46,36 +46,30 @@ export default new Vuex.Store({
       } else {
         state.usuarioDB = decode(payload);
       }
-    }
-   /*  SET_Item(state, acciones){
+    },
+    
+    SET_Item(state, acciones){
       state.items = acciones
     },
 
-    SET_AUTHENTICATED (state, value) {
-        state.authenticated = value
-    },
-    SET_USER (state, value) {
-        state.user = value
-    },
-
-    USUAROS(state, loginDatos) {
-      state.datosUsuarios = loginDatos
-    },
-
-    obtenerUsuario(state, payload){
-      state.token = payload; */
-      /* if(payload === ''){
-        state.usuarioDB = ''
-      }else{
-        state.usuarioDB = decode(payload);
-        this.$router.push({path:'/inicio'});
-      } */
-    //}
+    
   },
   actions: {
     guardarUsuario({commit}, payload) {
       localStorage.setItem('token', payload)
       commit('obternerUsuario', payload)
+      
+    },
+
+    datosAcciones({commit}) {
+      API
+      .get('contar_acciones_pendientes')
+      .then(respuesta => respuesta.data.total_acciones)
+      .then(acciones =>{
+        console.log(acciones);
+        commit('SET_Item', acciones),
+        localStorage.setItem('total_acciones', acciones)
+      })
       
     }
     /* datosAcciones({commit}) {
