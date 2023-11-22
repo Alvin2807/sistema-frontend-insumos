@@ -31,10 +31,11 @@ export default {
             campos:
             [
                 {text:'Tipo de Acción', value:'tipo_accion'},
-                {text:'Entrada', value:'num_entrada'},
-                {text:'Salida', value:'salida'},
-                {text:'Despacho', value:'despacho'},
-                {text:'Total de unidades', value:'cantidad_total'},
+                {text:'Número nota', value:'no_nota'},
+                {text:'Despacho solicitado', value:'despacho_requerido'},
+                {text:'Cantidad Solicitada', value:'cantidad_solicitada'},
+                {text:'Cantidad Pendiente', value:'cantidad_pendiente'},
+                {text:'Cantidad Llegada', value:'cantidad_llegada'},
                 {text:'Estado', value:'estado'}
             ],
             desserts:[]
@@ -56,7 +57,6 @@ export default {
             this.cargarDatos = true
             await API.get('acciones_pendientes')
             .then(respuesta=>{
-               /*  localStorage.setItem('token', token) */
                 this.desserts = respuesta.data.data
                 this.cargarDatos = false
             })

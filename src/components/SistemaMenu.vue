@@ -110,7 +110,6 @@
                         </v-list-item-action>
                         <v-list-item-title>Cerrar Sesion</v-list-item-title>
                     </v-list-item>
-
                     <v-list-item>
                         <v-list-item-action>
                             <v-btn class="elevation-0" color="green" text>
@@ -118,6 +117,7 @@
                             </v-btn>
                         </v-list-item-action>
                         <v-list-item-title>Ver Perfil</v-list-item-title>
+                    
                     </v-list-item>
                     </v-list>
 
@@ -130,22 +130,18 @@
             <v-btn 
                 color="#053565" 
                 class="elevation-0"
-                v-if="totalAcciones > 0"
                 @click="verNotificacion()"
             >
                 <v-badge
                     color="red"
                     :content="totalAcciones"
                 >
-                <v-icon  
-                    v-on="on"
-                    v-bind="attrs
-                ">
+                <v-icon>
                 notifications_active
                 </v-icon>
                 </v-badge>
             </v-btn>
-              
+         
            
            
         </v-app-bar>
@@ -166,7 +162,8 @@
 </template>
 <script src="sweetalert2.min.js"></script>
 <script>
-import { mapState, mapActions} from 'vuex'
+import { mapState, mapActions, mapMutations} from 'vuex'
+
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 export default {
     name:'SistemaMenu',
@@ -175,6 +172,7 @@ export default {
             drawer:null,
             titulo:-1,
             opacity:0,
+            total:'',
             overlay:false,
             items:[
                 {
@@ -217,14 +215,14 @@ export default {
 
     mounted() {
         this.datos
-        this.datosAcciones();
+        this.incrementar()
         window.location.hash="";
         window.location.hash="Again-No-back-button" //chrome
         window.onhashchange=function(){window.location.hash="";}
     },
 
     computed: {
-        ...mapState(['acciones','loginDatos']),
+        ...mapState(['acciones','loginDatos', 'pendientes']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Sistema de Control de Insumos' : ''
         },
@@ -234,11 +232,12 @@ export default {
         },
 
         totalAcciones(){
-            return localStorage.getItem('total_acciones')
+          return  this.pendientes
         }
     },
     methods: {
-       ...mapActions(['datosAcciones']),
+       ...mapActions(['incrementar']),
+       ...mapMutations(['aumentar']),
 
        cerrarSession(){
         Swal.fire({
@@ -266,10 +265,14 @@ export default {
         this.overlay = true
         setTimeout(() =>{
             this.overlay = false
+            if (this.$route.name !== 'navbar') 
             this.$router.push({path:'/acciones_pendientes'})
+            .catch(()=>{});
         },2000)
+       },
+
        }
-    },
+    
 }
 
 
