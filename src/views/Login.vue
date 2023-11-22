@@ -1,14 +1,20 @@
 <template>
-    <v-app style="background-color: #F2F4F4;">
-       <login-sistema/>
+    <v-app id="fondo">
+       
        <v-container>
         <v-layout align-center justify-center class="mt-16">
             <v-flex xs12 sm8 md3>
                 <v-card class="elevation-5">
                     <v-card-text>
-                        <v-toolbar flat height="100px"><v-icon class="mx-auto" size="100px">account_circle</v-icon></v-toolbar>
-                        <h3 id="tituloIniciar" class="text-center">{{ iniciarLoginTitulo }}</h3>
-                       
+                    <v-toolbar flat height="100px" >    
+                        <v-spacer></v-spacer>
+                        <img height="90px" :src="require('../assets/mp.png')"/>
+                        <img height="90px" class="mx-5" :src="require('../assets/sistema.png')"/>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                       <v-toolbar flat>
+                        <h3 id="tituloIniciar" class="mx-auto">Sistema de Control de Insumos</h3>
+                       </v-toolbar>
                         <v-form ref="validacion">
                             <v-row class="mt-2">
                                 <v-col 
@@ -71,14 +77,14 @@
 </template>
 <script src="sweetalert2.all.min.js"></script>
 <script>
-import LoginSistema from '../components/LoginSistema.vue'
+//import LoginSistema from '../components/LoginSistema.vue'
 import Swal from 'sweetalert2'
 import API from '@/API'
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 export default {
- components:{
+ /* components:{
     LoginSistema,
- },
+ }, */
 
  data() {
         return {
@@ -108,13 +114,14 @@ export default {
     },
 
     computed: {
+        ...mapState(['loginDatos']),
         iniciarLoginTitulo(){
             return this.titulo === -1 ? 'Iniciar Sesion' : ''
         }
     },
 
     methods: {
-        ...mapActions(['guardarUsuario']),
+        ...mapActions(['mostrarDetallesLogin']),
         async acceder(){
         try {
 
@@ -127,6 +134,7 @@ export default {
                         const user     = respuesta.data.data.name
                         const usuario  = respuesta.data.data.usuario
                         const despacho = respuesta.data.data.fk_despacho
+                        this.mostrarDetallesLogin(respuesta.data.data)
                         localStorage.setItem('token', token)
                         localStorage.setItem('user', JSON.stringify(user))
                         localStorage.setItem('usuario', JSON.stringify(usuario))
@@ -191,10 +199,13 @@ export default {
 <style>
 #tituloIniciar{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 18px;
  }
 
  #campoLogin{
    font-size: 18px; 
+ }
+
+ #fondo{
+    background-image: linear-gradient(#FBFCFC,#5DADE2, #FDFEFE);
  }
 </style>

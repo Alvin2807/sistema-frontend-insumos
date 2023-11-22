@@ -14,7 +14,7 @@
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title class="secondary--text">{{ datos }}</v-list-item-title>
+                    <v-list-item-title class="secondary--text">{{ loginDatos}}</v-list-item-title>
                 </v-list-item-content>
                 </v-list-item>
             </template>
@@ -130,6 +130,7 @@
             <v-btn 
                 color="#053565" 
                 class="elevation-0"
+                v-if="totalAcciones > 0"
                 @click="verNotificacion()"
             >
                 <v-badge
@@ -215,6 +216,7 @@ export default {
 
     mounted() {
         this.datos
+        this.mostrarPerfilLogin()
         this.incrementar()
         window.location.hash="";
         window.location.hash="Again-No-back-button" //chrome
@@ -237,7 +239,7 @@ export default {
     },
     methods: {
        ...mapActions(['incrementar']),
-       ...mapMutations(['aumentar']),
+       ...mapMutations(['aumentar','mostrarDetallesLogin']),
 
        cerrarSession(){
         Swal.fire({
@@ -271,7 +273,12 @@ export default {
         },2000)
        },
 
+       mostrarPerfilLogin(){
+        const detallesLogin = localStorage.getItem('user');
+        this.mostrarDetallesLogin(JSON.parse(detallesLogin))
        }
+
+    }
     
 }
 

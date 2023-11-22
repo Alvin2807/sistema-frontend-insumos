@@ -43,7 +43,7 @@
                                     autocomplete="off"
                                     type="text"
                                     maxLength="20"
-                                    class="caption my-input"
+                                    class="my-input"
                                     :rules="Obligatorio"
                                 >
 
@@ -61,7 +61,7 @@
                                     autocomplete="off"
                                     type="text"
                                     maxLength="100"
-                                    class="caption my-input"
+                                    class="my-input"
                                     :rules="Obligatorio"
                                 >
 
@@ -82,7 +82,6 @@
                                     :items="despachos"
                                     item-text="despacho"
                                     item-value="id_despacho"
-                                    class="caption"
                                     no-data-text="No hay datos disponible"
                                     :rules="Obligatorio"
                                 >
@@ -406,8 +405,10 @@ export default {
       },
 
       elegir(item){
-        const words = this.editeItem.productos;
-        const result = words.filter((word) => word.id_producto == item.id_producto);
+
+        let {productos} = this.editeItem
+        //const result = productos.filter((word) => word.id_producto == item.id_producto);
+        const result = productos.filter(data=>data.id_producto === item.id_producto);
         if (result.length > 0) {
             Swal.fire({
                 icon:'warning',

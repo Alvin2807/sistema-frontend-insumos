@@ -8,13 +8,30 @@ export default new Vuex.Store({
  
   state: {
     pendientes: '',
+    loginInfo:'',
+    loginDatos:{
+      name:'',
+      usuario:'',
+      email:'',
+      fk_despacho:'',
+      fk_rol:''
+    }
   },
   mutations: {
   
     aumentar(state, payload) {
       state.pendientes = payload
       state.total = payload
-    }
+    },
+
+    mostrarDetallesLogin(state, payload){
+      state.loginDatos = payload
+
+    },
+
+    accederLogin(state, payload) {
+      state.loginInfo = payload
+    },
   },
   actions: {
 
@@ -26,6 +43,14 @@ export default new Vuex.Store({
       })
      
     },
+
+    iniciarSession: function(context) {
+      API
+      .post('iniciar_sesion')
+      .then(respuesta => {
+          context.commit('accederLogin', respuesta.data)
+      })
+  }
 
   },
   modules: {
