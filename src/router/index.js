@@ -73,6 +73,13 @@ const router = new VueRouter({
           name:'CrearEntrada',
   
           component: ()=>import('../views/CrearEntrada')
+        },
+
+        {
+          path:'/edicion_de_solicitud',
+          name:'EdicionEntrada',
+
+          component: ()=>import('../views/EdicionEntrada')
         }
       ]
     }

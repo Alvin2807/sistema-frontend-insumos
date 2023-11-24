@@ -23,6 +23,7 @@
                     registrar
                     </v-btn>
                 </v-toolbar>
+                <v-divider></v-divider>
                 <v-card-text>
                     <v-toolbar flat>
                         <v-toolbar-title>
@@ -33,78 +34,75 @@
                         <span>Campos Obligatorios*</span>
                        <v-row class="mt-2">
                         <v-col
-                                cols="12"
-                                sm="6"
+                            cols="12"
+                            sm="6"
+                        >
+                            <v-text-field
+                                v-model="editeItem.no_nota"
+                                color="#053565"
+                                label="No. de nota*"
+                                autocomplete="off"
+                                type="text"
+                                maxLength="20"
+                                class="my-input"
+                                :rules="Obligatorio"
                             >
-                                <v-text-field
-                                    v-model="editeItem.no_nota"
-                                    color="#053565"
-                                    label="No. de nota*"
-                                    autocomplete="off"
-                                    type="text"
-                                    maxLength="20"
-                                    class="my-input"
-                                    :rules="Obligatorio"
-                                >
 
-                                </v-text-field>
-
-                            </v-col>
-                            <v-col
-                                cols="12"
-                                sm="6"
+                            </v-text-field>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="6"
+                        >
+                            <v-text-field
+                                v-model="editeItem.titulo_nota"
+                                color="#053565"
+                                label="Titulo de nota*"
+                                autocomplete="off"
+                                type="text"
+                                maxLength="100"
+                                class="my-input"
+                                :rules="Obligatorio"
                             >
-                                <v-text-field
-                                    v-model="editeItem.titulo_nota"
-                                    color="#053565"
-                                    label="Titulo de nota*"
-                                    autocomplete="off"
-                                    type="text"
-                                    maxLength="100"
-                                    class="my-input"
-                                    :rules="Obligatorio"
-                                >
 
-                                </v-text-field>
+                            </v-text-field>
 
-                            </v-col>
-
-                            <v-col
-                                cols="12"
-                                sm="12"
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="12"
+                        >
+                            <v-autocomplete
+                                v-model="editeItem.fk_despaho_requerido"
+                                label="Despacho a solicitar*"
+                                autocomplete="off"
+                                color="#053565"
+                                dense
+                                :items="despachos"
+                                item-text="despacho"
+                                item-value="id_despacho"
+                                no-data-text="No hay datos disponible"
+                                :rules="Obligatorio"
                             >
-                                <v-autocomplete
-                                    v-model="editeItem.fk_despaho_requerido"
-                                    label="Despacho a solicitar*"
-                                    autocomplete="off"
-                                    color="#053565"
-                                    dense
-                                    :items="despachos"
-                                    item-text="despacho"
-                                    item-value="id_despacho"
-                                    no-data-text="No hay datos disponible"
-                                    :rules="Obligatorio"
-                                >
-                                </v-autocomplete>
-                            </v-col>
-
-                            <v-col
-                                cols="12"
-                                sm="12"
+                            </v-autocomplete>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="12"
+                        >
+                            <v-textarea
+                                v-model="editeItem.comentario"
+                                label="Obervación"
+                                autocomplete="off"
+                                color="#053565"
+                                type="text"
+                                maxLength="100"
+                                counter="100"
+                                dense
+                                rows="1"
                             >
-                                <v-textarea
-                                    v-model="editeItem.comentario"
-                                    label="Obervación"
-                                    autocomplete="off"
-                                    color="#053565"
-                                    type="text"
-                                    maxLength="100"
-                                    counter="100"
-                                    dense
-                                    rows="1"
-                                >
-                                </v-textarea>
-                            </v-col>
+                            </v-textarea>
+                        </v-col>
                        </v-row>
 
                        <v-toolbar flat>
@@ -123,6 +121,7 @@
                                     label="Buscar"
                                     autocomplete="off"
                                     placeholder="Buscar por código o producto"
+                                    clearable
                                 >
 
                                 </v-text-field>
@@ -203,6 +202,8 @@
                                     label="Buscar"
                                     autocomplete="off"
                                     placeholder="Buscar por código o producto"
+                                    clearable
+                                    prepend-inner-icon="search"
                                 >
 
                                 </v-text-field>
@@ -295,13 +296,13 @@ export default {
           despachos:[],
           campoObligatorio:
           [
-            v => !!v || 'campo requerido',
+            v => !!v || 'Campo requerido',
             v => v > 0 || 'Campo obligatorio'
           ],
 
           Obligatorio:
           [
-            v => !!v || 'campo requerido',
+            v => !!v || 'Campo requerido',
             
           ],
           camposData:
@@ -445,8 +446,54 @@ export default {
         this.editeItem.productos = []
       },
 
-    registrar(){
-        try {
+      registrar(){
+        if (this.$refs.validacion.validate()) {
+            if (this.editeItem.productos.length == 0) {
+                Swal.fire({
+                    icon:'warning',
+                    title:'Faltan campos obligatorios',
+                    showConfirmButton:false,
+                    timer:2000
+                }) 
+            } else {
+                this.loader = 'btnRegistrar'
+                this.editeItem.usuario = this.datos
+                this.editeItem.funcionario_solicitud = this.usuarioSolicitud
+                this.editeItem.fk_despacho = parseInt(this.despachoUsuario)  
+                const registrarDatos = async () =>{
+                    try {
+                        this.loader = 'btnRegistrar'
+                        this.editeItem.usuario = this.datos
+                        this.editeItem.funcionario_solicitud = this.usuarioSolicitud
+                        this.editeItem.fk_despacho = parseInt(this.despachoUsuario)
+                        const respuesta = await API.post('acciones', this.editeItem)
+                        if (respuesta.data.ok == true) {
+                            const {id} = respuesta.data.data
+                            localStorage.setItem('id_accion', id)
+                            this.incrementar()
+                            this.$router.push('/edicion_de_solicitud')
+                            this.mensajeRegistrarExitoso(respuesta.data.exitoso)
+                        } else if (respuesta.data.existe) {
+                            this.mensajeExisteRegistro(respuesta.data.existe)
+                        } else if (respuesta.data.ok == false) {
+                            this.mensajeRegistraError(respuesta.data.errorRegistro)
+                        }
+                    } catch (error) {
+                        if (error) {
+                            Swal.fire({
+                                icon:'error',
+                                title:'Hubo un error consulte con el Administrador del sistema',
+                                showConfirmButton:false,
+                                timer:2000
+                            })  
+                        }
+                    }
+                }
+                return registrarDatos();
+            }
+        }
+
+       /*  try {
             if (this.$refs.validacion.validate()) {
                 if (this.editeItem.productos == 0) {
                     Swal.fire({
@@ -463,9 +510,10 @@ export default {
                    API.post('acciones', this.editeItem)
                     .then(respuesta=>{
                         if (respuesta.data.ok == true) {
-                            this.incrementar('aumentar')
+                            const {id_accion} = respuesta.data.data
+                            localStorage.setItem('id_accion', id_accion)
+                            this.incrementar()
                             this.mensajeRegistrarExitoso(respuesta.data.exitoso)
-                           
                         } else if (respuesta.data.existe) {
                             this.mensajeExisteRegistro(respuesta.data.existe)
                             
@@ -492,7 +540,7 @@ export default {
                     timer:2000
                 })  
             }
-        }
+        } */
        
         
       },
@@ -507,10 +555,10 @@ export default {
         })
       },
 
-      mensajeRegistraError(error){
+      mensajeRegistraError(errorRegistro){
         Swal.fire({
             icon:'error',
-            title:error,
+            title:errorRegistro,
             showConfirmButton:false,
             timer:2000
         })
@@ -543,5 +591,9 @@ export default {
 #btnCerrarModal:hover{
     background-color: red;
     color: white;
+}
+
+.my-input input{
+    text-transform: uppercase;
 }
 </style>

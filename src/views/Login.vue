@@ -80,7 +80,7 @@
 //import LoginSistema from '../components/LoginSistema.vue'
 import Swal from 'sweetalert2'
 import API from '@/API'
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 export default {
  /* components:{
     LoginSistema,
@@ -121,7 +121,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['mostrarDetallesLogin']),
+        ...mapMutations(['mostrarDetallesLogin']),
         async acceder(){
         try {
 
