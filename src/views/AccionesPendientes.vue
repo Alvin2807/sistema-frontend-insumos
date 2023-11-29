@@ -112,14 +112,19 @@ export default {
             })
         },
 
-        editarConfirmar(item){
-            this.overlay = true
-            setTimeout(()=>{
+        editarConfirmar(item, val){
+            if (item.fk_tipo_accion === 1) {
+                this.overlay = true
+                setTimeout(()=>{
                 this.overlay = false
                 console.log(item);
+                localStorage.setItem('id_accion', item.id_accion)
                 this.$router.push({path:'/edicion_de_solicitud'})
-            },2000)
-        }
+                },2000)  
+            }
+           
+        },
+
     },
 }
 </script>

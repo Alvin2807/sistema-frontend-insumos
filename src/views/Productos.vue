@@ -97,10 +97,10 @@
                 <span class="text--primary">Campos obligatorios*</span>
                 <v-form ref="validacion">
                   
-                    <v-row class="mt-1">
+                    <v-row >
                         <v-col
                             cols="12"
-                            sm="6"
+                            sm="3"
                         >
                             <v-text-field
                                 v-model="editedItem.codigo_producto"
@@ -118,7 +118,7 @@
                         </v-col>
                         <v-col
                             cols="12"
-                            sm="6"
+                            sm="5"
                         >
                             <v-text-field
                                 v-model="editedItem.producto"
@@ -135,7 +135,7 @@
 
                         <v-col
                             cols="12"
-                            sm="6"
+                            sm="4"
                         >
                             <v-autocomplete
                                 v-model="editedItem.fk_categoria"
@@ -147,7 +147,7 @@
                                 :items="categoriaData"
                                 item-text="categoria"
                                 item-value="id_categoria"
-                                class="caption my-input"
+                                class="caption my-input mt-5"
                                 no-data-text="No hay datos disponibles"
                                 :rules="campoObligatorio"
                             >
@@ -167,6 +167,29 @@
                                 :items="marcasData"
                                 item-text="nombre_marca"
                                 item-value="id_marca"
+                                class="caption my-input"
+                                no-data-text="No hay datos disponibles"
+                                :rules="campoObligatorio"
+                                @change="mostrarModelos(editedItem.fk_marca)"
+                              
+                            >
+                            </v-autocomplete>
+                        </v-col>
+
+                        <v-col
+                            cols="12"
+                            sm="6"
+                        >
+                            <v-autocomplete
+                                v-model="editedItem.fk_impresora"
+                                label="Modelo de impresora*"
+                                type="text"
+                                color="#053565"
+                                autocomplete="off"
+                                dense
+                                :items="modelos"
+                                item-text="impresora"
+                                item-value="id_impresora"
                                 class="caption my-input"
                                 no-data-text="No hay datos disponibles"
                                 :rules="campoObligatorio"
@@ -241,6 +264,7 @@
 <script>
 import API from '@/API'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import {mapState} from 'vuex'
 export default {
     data() {
         return {
@@ -259,6 +283,7 @@ export default {
                 {text:'Marca', value:'nombre_marca', filterable:false},
                 {text:'Categoría', value:'categoria', filterable:false},
                 {text:'Color', value:'color', filterable:false},
+                {text:'Impresora', value:'impresora', filterable:false},
                 {text:'Stock', value:'stock', filterable:false},
                 {text:'Estado', value:'estado', filterable:false},
                 {text:'Editar', value:'actions', sortable:false}
@@ -268,6 +293,7 @@ export default {
             medidas:[],
             marcasData:[],
             colores:[],
+            modelos:[],
             campoObligatorio:
             [
                 v => !!v || 'Campo obligatorio'
@@ -279,6 +305,7 @@ export default {
                 fk_marca:'',
                 fk_unidad_medida:'',
                 fk_color:'',
+                fk_impresora:'',
                 usuario:''
             }
         }
@@ -295,6 +322,7 @@ export default {
     },
 
     computed: {
+        ...mapState(['loginDatos']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Productos' : ''
         },
@@ -303,9 +331,6 @@ export default {
             return this.titulo === -1 ? 'Registrar Producto' : ''
         },
 
-        datos(){
-            return localStorage.getItem('usuario').replace(/['"]+/g, '');
-        },
     },
 
     mounted() {
@@ -377,7 +402,7 @@ export default {
       async  registrar(){
             try {
                 if (this.$refs.validacion.validate()) {
-                    this.editedItem.usuario = this.datos
+                    this.editedItem.usuario = this.loginDatos.usuario
                     this.loader = 'btnRegistrar'
                     const registrarProducto = await API.post('productos', this.editedItem)
                     .then(respuesta=>{
@@ -432,6 +457,18 @@ export default {
                 showConfirmButton:false,
                 timer:2000
             })
+        },
+
+        mostrarModelos(fk_marca){
+            if (fk_marca !== null) {
+                API
+                .get('selectModelos/' + fk_marca)
+                .then(respuesta=>this.modelos = respuesta.data.data)
+            } else {
+                this.editedItem.modelos = null
+                this.modelos = []
+                return
+            }
         }
     },
 }
@@ -440,6 +477,7 @@ export default {
 #tituloToolbar{
     border-left: solid 8px #053565;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
 }
 
 #tituloModal{

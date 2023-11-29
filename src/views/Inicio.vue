@@ -1,7 +1,8 @@
 <template>
-   <v-app>
+   <div>
       <sistema-menu/>
-   </v-app>
+   </div>
+ 
 </template>
 <script>
 import SistemaMenu from '../components/SistemaMenu.vue'

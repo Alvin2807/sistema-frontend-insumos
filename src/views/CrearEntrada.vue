@@ -127,9 +127,7 @@
                                 </v-text-field>
 
                             </v-col>
-                        <v-toolbar-title>
-                           
-                        </v-toolbar-title>
+                        
                        </v-toolbar>
 
                         <v-data-table
@@ -347,7 +345,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['contador']),
+        ...mapState(['contador','loginDatos']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Formulario de Entrada' : ''
         },
@@ -358,18 +356,6 @@ export default {
 
         tituloModal(){
             return this.titulo === -1 ? 'Productos' : ''
-        },
-
-        datos(){
-            return localStorage.getItem('usuario').replace(/['"]+/g, '');
-        },
-
-        despachoUsuario(){
-            return localStorage.getItem('fk_despacho').replace(/['"]+/g, '');
-        },
-
-        usuarioSolicitud(){
-            return localStorage.getItem('user').replace(/['"]+/g, '');
         },
 
     },
@@ -408,7 +394,7 @@ export default {
       elegir(item){
 
         let {productos} = this.editeItem
-        //const result = productos.filter((word) => word.id_producto == item.id_producto);
+       
         const result = productos.filter(data=>data.id_producto === item.id_producto);
         if (result.length > 0) {
             Swal.fire({
@@ -456,16 +442,12 @@ export default {
                     timer:2000
                 }) 
             } else {
-                this.loader = 'btnRegistrar'
-                this.editeItem.usuario = this.datos
-                this.editeItem.funcionario_solicitud = this.usuarioSolicitud
-                this.editeItem.fk_despacho = parseInt(this.despachoUsuario)  
                 const registrarDatos = async () =>{
                     try {
                         this.loader = 'btnRegistrar'
-                        this.editeItem.usuario = this.datos
-                        this.editeItem.funcionario_solicitud = this.usuarioSolicitud
-                        this.editeItem.fk_despacho = parseInt(this.despachoUsuario)
+                        this.editeItem.usuario = this.loginDatos.usuario
+                        this.editeItem.funcionario_solicitud = this.loginDatos.name
+                        this.editeItem.fk_despacho = parseInt(this.loginDatos.fk_despacho)
                         const respuesta = await API.post('acciones', this.editeItem)
                         if (respuesta.data.ok == true) {
                             const {id} = respuesta.data.data

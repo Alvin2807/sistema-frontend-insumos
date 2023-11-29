@@ -113,6 +113,12 @@ export default {
         }
     },
 
+    mounted() {
+        window.location.hash="";
+        window.location.hash="Again-No-back-button" //chrome
+        window.onhashchange=function(){window.location.hash="";}
+    },
+
     computed: {
         ...mapState(['loginDatos']),
         iniciarLoginTitulo(){
@@ -123,45 +129,27 @@ export default {
     methods: {
         ...mapMutations(['mostrarDetallesLogin']),
         async acceder(){
-        try {
-
-            if (this.$refs.validacion.validate()) {
-                this.loader = 'btnCargar'
-                const loguear = await API.post('iniciar_sesion', this.editedItem) 
-                .then(respuesta=>{
-                    if (respuesta.data.ok == true) {
-                        const token    = respuesta.data.token
-                        const user     = respuesta.data.data.name
-                        const usuario  = respuesta.data.data.usuario
-                        const despacho = respuesta.data.data.fk_despacho
-                        this.mostrarDetallesLogin(respuesta.data.data)
-                        localStorage.setItem('token', token)
-                        localStorage.setItem('user', JSON.stringify(user))
-                        localStorage.setItem('usuario', JSON.stringify(usuario))
-                        localStorage.setItem('fk_despacho', JSON.stringify(despacho))
-                        API.defaults.headers.common['Authorization'] = "Bearer" +token
-                        this.$router.push({path:'/inicio'})
-                        this.mensajeUsuarioExitoso(respuesta.data.exitoso)
-                 
-                    } else if (respuesta.data.ok == false){
-                        this.mensajeError(respuesta.data.error)
-                    } else {
-                        this.mensajeErrorUsuarioIncorrecto(respuesta.data.message)
-                    }
-                }) 
-                return loguear
+            try {
+                if (this.$refs.validacion.validate()) {
+                    this.loader = 'btnCargar'
+                    API
+                    .post('iniciar_sesion', this.editedItem) 
+                    .then(respuesta=>{
+                        if (respuesta.data.ok == true) {
+                            this.mostrarDetallesLogin(respuesta.data.data) 
+                            this.mensajeUsuarioExitoso(respuesta.data.exitoso)
+                            localStorage.setItem('usuario', JSON.stringify(respuesta.data.data))
+                            this.$router.push({path:'/inicio'})
+                        } else if (respuesta.data.ok == false) {
+                            this.mensajeError(respuesta.data.error)
+                        } else {
+                            this.mensajeErrorUsuarioIncorrecto(respuesta.data.message)
+                        }
+                    })
+                }
+            } catch (error) {
+                
             }
-           
-        } catch (error) {
-          if (error) {
-            Swal.fire({
-                icon:'error',
-                title:'Hubo un error consulte con el administrador del sistema',
-                showConfirmButton:false,
-                timer:2000
-            })
-          }
-        }
            
         },
 

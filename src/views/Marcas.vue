@@ -8,12 +8,14 @@
                     color="#053565" 
                     dark
                     class="elevation-0"
+                    height="40px"
                     @click="crear()"
                 >
                 <v-icon>add</v-icon>
                 crear
                 </v-btn>
             </v-toolbar>
+            <v-divider></v-divider>
             <v-col
                 cols="12"
                 sm="6"
@@ -25,6 +27,8 @@
                     class="caption"
                     color="#053565"
                     autocomplete="off"
+                    clearable
+                    prepend-inner-icon="search"
                 >
 
                 </v-text-field>
@@ -42,13 +46,24 @@
                 :headers="campos"
             >
                 <template v-slot:[`item.actions`]="{item}">
-                   <v-icon
-                    class="mr-2"
-                    mb
-                    @click="editar(item)"
-                   >
-                   mdi-pencil
-                   </v-icon>
+                    <v-btn
+                        class="mr-2"
+                        x-small
+                        fab
+                        color="green"
+                        dark
+                        @click="editar(item)"
+                    ><v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn
+                        class="mr-2"
+                        x-small
+                        fab
+                        color="light-blue darken-2"
+                        dark
+                        @click="addImpresora(item)"
+                    ><v-icon>add</v-icon>
+                    </v-btn>
                 </template>
 
             </v-data-table>
@@ -112,8 +127,8 @@
                     <v-spacer></v-spacer>
                     <v-btn
                         class="elevation-0"
-                        text
                         color="#053565"
+                        outlined
                         :loading="btnRegistrar"
                         @click="registrar()"
                     >
@@ -130,6 +145,7 @@
 <script>
 import API from '@/API'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import {mapState} from 'vuex'
 export default {
     data() {
         return {
@@ -143,7 +159,7 @@ export default {
             opacity:0,
             campos:[
                 {text:'Marca', value:'nombre_marca'},
-                {text:'Editar', value:'actions', sortable:false}
+                {text:'Editar | Agregar Impresora', value:'actions', sortable:false}
             ],
             desserts:[],
             camposObligatorios:[
@@ -157,6 +173,7 @@ export default {
     },
 
     computed: {
+        ...mapState(['loginDatos']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Marcas' : ''
         },
@@ -165,9 +182,6 @@ export default {
             return this.titulo === -1 ? 'Crear Marcas' : ''
         },
 
-        datos(){
-            return localStorage.getItem('usuario').replace(/['"]+/g, '');
-        }
     },
 
     watch: {
@@ -221,7 +235,7 @@ export default {
             try {
                 if (this.$refs.validacion.validate()) {
                     this.loader = 'btnRegistrar'
-                    this.editedItem.usuario = this.datos
+                    this.editedItem.usuario = this.loginDatos.usuario
                     const registrarMarca = await API.post('marcas', this.editedItem)
                     .then(respuesta=>{
                         if (respuesta.data.ok == true) {
@@ -275,6 +289,14 @@ export default {
                 showConfirmButton:false,
                 timer:2000
             })
+        },
+
+        addImpresora(item){
+            this.overlay = true
+            setTimeout(() =>{
+                this.overlay = false
+                console.log(item);
+            },2000);
         }
     },
 }
@@ -283,6 +305,7 @@ export default {
 #tituloToolbar{
     border-left: solid 8px #053565;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
 }
 
 #tituloModal{

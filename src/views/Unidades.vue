@@ -284,6 +284,7 @@ export default {
 #tituloToolbar{
     border-left: solid 8px #053565;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
 }
 
 #tituloModal{

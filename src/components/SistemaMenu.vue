@@ -14,7 +14,7 @@
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title class="secondary--text">{{ loginDatos}}</v-list-item-title>
+                    <v-list-item-title class="secondary--text">{{ loginDatos.name}}</v-list-item-title>
                 </v-list-item-content>
                 </v-list-item>
             </template>
@@ -89,7 +89,7 @@
                         </v-list-item-avatar>
 
                         <v-list-item-content>
-                        <v-list-item-title>{{ datos }}</v-list-item-title>
+                        <v-list-item-title>{{ loginDatos.name }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     </v-list>
@@ -105,19 +105,16 @@
                                 text
                                 @click="cerrarSession()"
                             >
-                                <v-icon>block</v-icon>
+                                <v-icon>block</v-icon>Cerrar Sesion
                             </v-btn>
                         </v-list-item-action>
-                        <v-list-item-title>Cerrar Sesion</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-action>
                             <v-btn class="elevation-0" color="green" text>
-                                <v-icon>visibility</v-icon>
+                                <v-icon>visibility</v-icon>Ver perfil
                             </v-btn>
                         </v-list-item-action>
-                        <v-list-item-title>Ver Perfil</v-list-item-title>
-                    
                     </v-list-item>
                     </v-list>
 
@@ -182,8 +179,7 @@ export default {
                     [
                         {title:'Categorías', path:'/categorias'},
                         {title:'Depositos', path:'/depositos'},
-                        {title:'Medidas', path:'/unidades_de_medidas'}
-
+                        {title:'Medidas', path:'/unidades_de_medidas'},
                         //{title: 'Marcas', path:'/marcas'}
                     ],
                     title:'Parametros'
@@ -215,7 +211,6 @@ export default {
     },
 
     mounted() {
-        this.datos
         this.mostrarPerfilLogin()
         this.incrementar()
         window.location.hash="";
@@ -229,10 +224,6 @@ export default {
             return this.titulo === -1 ? 'Sistema de Control de Insumos' : ''
         },
 
-        datos(){
-            return localStorage.getItem('user').replace(/['"]+/g, '');
-        },
-
         totalAcciones(){
           return  this.pendientes
         }
@@ -242,6 +233,7 @@ export default {
        ...mapMutations(['aumentar','mostrarDetallesLogin']),
 
        cerrarSession(){
+        this.menu = false
         Swal.fire({
             title: '¿Estas seguro de cerrar sesion?',
             icon: 'warning',
@@ -256,6 +248,11 @@ export default {
             this.overlay = true
             setTimeout(()=>{
             this.overlay = false
+            this.loginDatos.name=''
+            this.loginDatos.fk_despacho='',
+            this.loginDatos.fk_rol = '',
+            this.loginDatos.usuario='',
+            this.loginDatos.email = ''
             this.$router.push({path:'/'})
         },2000)
         }
@@ -274,7 +271,7 @@ export default {
        },
 
        mostrarPerfilLogin(){
-        const detallesLogin = localStorage.getItem('user');
+        const detallesLogin = localStorage.getItem('usuario');
         this.mostrarDetallesLogin(JSON.parse(detallesLogin))
        }
 
