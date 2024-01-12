@@ -116,6 +116,7 @@
 <script>
 import API from '@/API'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import {mapState} from 'vuex'
 export default {
     data() {
         return {
@@ -160,16 +161,13 @@ export default {
 
 
     computed: {
+        ...mapState(['loginDatos']),
         tituloToolbar(){
             return this.titulo === -1 ? 'Categorías' : ''
         },
 
         tituloModalRegistro(){
             return this.titulo === -1 ? 'Crear Categoría' : ''
-        },
-
-        datos(){
-            return localStorage.getItem('usuario').replace(/['"]+/g, '');
         },
 
     },
@@ -209,7 +207,7 @@ export default {
 
       async registrar(){
             try {
-                this.editedItem.usuario = this.datos
+                this.editedItem.usuario = this.loginDatos.usuario
                 if (this.$refs.validacion.validate()) {
                     this.loader = 'btnRegistrar'
                     const registrarCategoria = await API.post('categorias', this.editedItem)

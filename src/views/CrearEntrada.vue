@@ -36,6 +36,15 @@
                 </v-stepper-step>
                 <v-stepper-content step="1">
                     <span>Campos Obligatorios*</span>
+                    <v-alert
+                        dense
+                        text
+                        class="mt-2"
+                        type="error"
+                        v-if="verificarNota"
+                    >
+                        Ya existe el número de nota <strong>{{ editeItem.no_nota.toUpperCase()}}</strong>
+                    </v-alert>
                     <v-card class="elevation-0">
                         <v-form ref="validacion">
                             <v-row class="mt-3">
@@ -54,6 +63,7 @@
                                         :counter="11"
                                         :rules="rulesNotas"
                                         hint="Ejemplo: NT-001-1991"
+                                     
                                     >
                                     </v-text-field>
                                 </v-col>
@@ -67,8 +77,9 @@
                                         label="Titulo de nota*"
                                         autocomplete="off"
                                         type="text"
-                                        maxLength="100"
+                                        maxLength="50"
                                         class="my-input"
+                                        counter="50"
                                         :rules="rulesTituloNota"
                                     >
                                     </v-text-field>
@@ -97,7 +108,7 @@
                                     sm="4"
                                 >
                                     <v-text-field
-                                        v-model="editeItem.direccion"
+                                        v-model="editeItem.lugar_destino"
                                         label="Lugar de destino*"
                                         autocomplete="off"
                                         color="#053565"
@@ -114,7 +125,7 @@
                                     sm="3"
                                 >
                                     <v-text-field
-                                        v-model="editeItem.provincia"
+                                        v-model="editeItem.ciudad_destino"
                                         label="Ciudad de destino*"
                                         autocomplete="off"
                                         color="#053565"
@@ -139,7 +150,7 @@
                                         counter="100"
                                         dense
                                         rows="1"
-                                        :rules="Obligatorio"
+                                        :rules="rulesComentario"
                                     >
                                     </v-textarea>
                                 </v-col>
@@ -150,7 +161,7 @@
                     <v-btn
                         color="#053565"
                         dark
-                        class="white--text"
+                        class="white--text mt-3"
                         @click="btnSiguiente()"
                     >
                         siguiente
@@ -224,6 +235,9 @@
                             </template>
                             <v-progress-linear v-show="progressBar" slot="progress"  color="#053565" indeterminate></v-progress-linear>
                         </v-data-table>
+                        <v-toolbar flat>
+                            <v-toolbar-title>Productos a solicitar({{ cantArrayArticulo }})</v-toolbar-title>
+                        </v-toolbar>
                         <v-form ref="validarDetalle">
                             <div
                                 v-for="(producto, index) in editeItem.productos" :key="index + producto"
@@ -346,6 +360,7 @@ export default {
             titulo:-1,
             cargarDatos:true,
             overlay:false,
+            verificarNota:false,
             opacity:0,
             buscar:'',
             progressBar:true,
@@ -356,8 +371,8 @@ export default {
                 titulo_nota:'',
                 fk_despaho_requerido:'',
                 comentario:'',
-                direccion:'',
-                provincia:'',
+                lugar_destino:'',
+                ciudad_destino:'',
                 fk_despacho:'',
                 fk_tipo_accion:1,
                 productos:
@@ -381,9 +396,6 @@ export default {
                 v => /^['A-Za-z']+[-]+[0-9]+[-]+[0-9]+$/.test(v) || 'El campo debe de tener letras, numeros y guión',
                 value => (value && value.length == 11) || 'El campo debe de tener maximo 11 caracteres',
             ],
-            rulesTituloNota:[
-                value => !!value || 'Campo obligatorio.',
-            ],
 
             Obligatorio:[
             value => !!value || 'Campo obligatorio.',
@@ -392,6 +404,14 @@ export default {
             [
                 v => !!v || 'Campo requerido',
                 v => v > 0 || 'Campo obligatorio'
+            ],
+            rulesTituloNota:[
+                value => (value && value.length >= 20) || 'El campo debe tener maximo 20 caracteres',
+                v => !!v || 'Campo obligatorio'
+            ],
+            rulesComentario:[
+                value => (value && value.length >= 80) || 'El campo debe tener maximo 80 caracteres',
+                v => !!v || 'Campo obligatorio'
             ],
             despachos:[],
             desserts:[],
@@ -486,9 +506,8 @@ export default {
         getColor (stock) {
             if (stock >= 10) return 'green'
             else if (stock == 0) return 'red'
-            //else if (stock == 0) return 'red'
             else return 'orange'
-      },
+        },
 
       agregar(item){
         let {productos} = this.editeItem
@@ -530,11 +549,11 @@ export default {
     getDireccionDespacho(){
         if (this.editeItem.fk_despaho_requerido !== null) {
             let objDireccion = this.despachos.find(data =>data.id_despacho === this.editeItem.fk_despaho_requerido)
-            this.editeItem.direccion = objDireccion.direccion
-            this.editeItem.provincia = objDireccion.provincia
+            this.editeItem.lugar_destino = objDireccion.direccion
+            this.editeItem.ciudad_destino = objDireccion.provincia
         } else {
-            this.editeItem.direccion = null
-            this.editeItem.provincia = null
+            this.editeItem.lugar_destino = null
+            this.editeItem.ciudad_destino = null
         }
     },
 
@@ -567,6 +586,8 @@ export default {
                         },2000)
                     } else if (respuesta.data.ok == false) {
                         this.mensajeRegistraError(respuesta.data.errorRegistro)
+                    } else if (respuesta.data.existe) {
+                        this.mensajeExiste(respuesta.data.existe)
                     }
                 } else {
                     Swal.fire({
@@ -602,6 +623,15 @@ export default {
         })
     },
 
+    mensajeExiste(existe){
+        Swal.fire({
+            icon:'warning',
+            title:existe,
+            showConfirmButton:false,
+            timer:2000
+        })
+    },
+
     nuevo(){
         this.loader = 'btnNuevo'
         this.resetProductos()
@@ -613,6 +643,7 @@ export default {
         this.$refs.validacion.reset()
         this.$refs.validacion.resetValidation()
     },
+
 
     },
 }
